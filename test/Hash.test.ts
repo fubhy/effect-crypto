@@ -1,9 +1,8 @@
-import { Effect } from "effect"
-import { sha256 } from "effect-crypto/sha256"
+import * as Crypto from "effect-crypto"
 import { expect, it } from "vitest"
 
-it(`should successfully hash a string`, () => {
-  expect(Effect.runSync(sha256("Test"))).toStrictEqual(
+it("should successfully hash a string using SHA-256", () => {
+  expect(Crypto.sha256("Test")).toStrictEqual(
     new Uint8Array([
       83,
       46,
