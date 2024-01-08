@@ -3,6 +3,7 @@
  */
 
 import * as hash from "./internal/hash.js"
+import * as passwordHash from "./internal/passwordHash.js"
 
 /**
  * Hashes the input with SHA-224.
@@ -51,3 +52,11 @@ export const sha512_224: (input: string | Uint8Array) => Uint8Array = hash.sha51
  * @category hashing
  */
 export const sha512_256: (input: string | Uint8Array) => Uint8Array = hash.sha512_256
+
+/**
+ * Password hashing the password and salt with scrypt.
+ *
+ * @since 1.0.0
+ * @category password hashing
+ */
+export const scrypt: typeof passwordHash.scrypt = passwordHash.scrypt
