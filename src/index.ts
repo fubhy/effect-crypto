@@ -67,7 +67,9 @@ class ScryptOptionsError extends Data.TaggedError("ScryptOptionsError")<{
  * @since 2.0.0
  * @category refinements
  */
-export const isScryptOptionsError = Predicate.isTagged("ScryptOptionsError")
+export const isScryptOptionsError: (error: unknown) => error is ScryptOptionsError = Predicate.isTagged(
+  "ScryptOptionsError"
+) as any
 
 /**
  * Password hashing the password and salt with scrypt.
