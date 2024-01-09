@@ -1,4 +1,4 @@
-import { Either } from "effect"
+import { Either, Option } from "effect"
 import * as Crypto from "effect-crypto"
 import { expect, it } from "vitest"
 
@@ -41,4 +41,15 @@ it("should successfully use scrypt", () => {
       ])
     )
   )
+})
+
+it("should fail with `ScryptOptionsError`", () => {
+  const output = Crypto.scrypt("password", "salt", { N: 123, r: 8, p: 1, dkLen: 32 })
+  expect(Either.isLeft(output)).toBe(true)
+  expect(Either.getLeft(output)).toMatchObject(Option.some({
+    _tag: "ScryptOptionsError",
+    cause: new Error(
+      "Scrypt: N must be larger than 1, a power of 2, less than 2^(128 * r / 8) and less than 2^32"
+    )
+  }))
 })
