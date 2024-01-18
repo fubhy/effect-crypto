@@ -12,6 +12,17 @@ import * as Either from "effect/Either"
 import * as Predicate from "effect/Predicate"
 
 /**
+ * Internal helper function to wrap an encoder utility with `Either.try`.
+ */
+const makeCryptoFn =
+  <T extends (...args: Array<any>) => any>(cryptoFunction: T) =>
+  (...args: Parameters<T>): Either.Either<CryptoError, ReturnType<T>> =>
+    Either.try({
+      try: () => cryptoFunction(...args),
+      catch: (cause) => new CryptoError({ cause })
+    })
+
+/**
  * Hashes the input with SHA-224.
  *
  * @since 1.0.0
@@ -79,15 +90,11 @@ export const isCryptoError: (error: unknown) => error is CryptoError = Predicate
  * @since 1.0.0
  * @category password hashing
  */
-export const scrypt = (
+export const scrypt: (
   input: string | Uint8Array,
   salt: string | Uint8Array,
   options: Scrypt.ScryptOpts
-): Either.Either<CryptoError, Uint8Array> =>
-  Either.try({
-    try: () => Scrypt.scrypt(input, salt, options),
-    catch: (cause) => new CryptoError({ cause })
-  })
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(Scrypt.scrypt)
 
 /**
  * Password hashing the password and salt with argon2d.
@@ -95,15 +102,11 @@ export const scrypt = (
  * @since 1.0.0
  * @category password hashing
  */
-export const argon2d = (
+export const argon2d: (
   password: Uint8Array | string,
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
-): Either.Either<CryptoError, Uint8Array> =>
-  Either.try({
-    try: () => NobleArgon2.argon2d(password, salt, opts),
-    catch: (cause) => new CryptoError({ cause })
-  })
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2d)
 
 /**
  * Password hashing the password and salt with argon2i.
@@ -111,15 +114,11 @@ export const argon2d = (
  * @since 1.0.0
  * @category password hashing
  */
-export const argon2i = (
+export const argon2i: (
   password: Uint8Array | string,
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
-): Either.Either<CryptoError, Uint8Array> =>
-  Either.try({
-    try: () => NobleArgon2.argon2i(password, salt, opts),
-    catch: (cause) => new CryptoError({ cause })
-  })
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2i)
 
 /**
  * Password hashing the password and salt with argon2id.
@@ -127,15 +126,11 @@ export const argon2i = (
  * @since 1.0.0
  * @category password hashing
  */
-export const argon2id = (
+export const argon2id: (
   password: Uint8Array | string,
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
-): Either.Either<CryptoError, Uint8Array> =>
-  Either.try({
-    try: () => NobleArgon2.argon2id(password, salt, opts),
-    catch: (cause) => new CryptoError({ cause })
-  })
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2id)
 
 const encodingError = "effect-crypto/EncodingError"
 class EncodingError extends Data.TaggedError(encodingError)<{
