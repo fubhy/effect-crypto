@@ -135,7 +135,7 @@ export const argon2id: (
   opts: NobleArgon2.ArgonOpts
 ) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2id)
 
-export type Blake3Opts = {
+type Blake3Opts = {
   dkLen?: number
   key: Uint8Array | string
   context?: never
