@@ -150,7 +150,7 @@ type Blake3Opts = {
 }
 
 /**
- * Hashing the input with blake3.
+ * Hashes the input with blake3.
  *
  * @since 1.0.0
  * @category hashing
