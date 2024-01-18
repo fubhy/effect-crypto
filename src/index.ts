@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import * as CiphersUtils from "@noble/ciphers/utils"
 import * as NobleArgon2 from "@noble/hashes/argon2"
 import * as Scrypt from "@noble/hashes/scrypt"
 import * as NobleSha256 from "@noble/hashes/sha256"
@@ -65,7 +66,7 @@ class CryptoError extends Data.TaggedError("effect-crypto/CryptoError")<{
 /**
  * Returns `true` if the specified value is an `CryptoError`, `false` otherwise.
  *
- * @since 2.0.0
+ * @since 1.0.0
  * @category refinements
  */
 export const isCryptoError: (error: unknown) => error is CryptoError = Predicate.isTagged(
@@ -135,3 +136,58 @@ export const argon2id = (
     try: () => NobleArgon2.argon2id(password, salt, opts),
     catch: (cause) => new CryptoError({ cause })
   })
+
+const encodingError = "effect-crypto/EncodingError"
+class EncodingError extends Data.TaggedError(encodingError)<{
+  cause: unknown
+}> {}
+
+/**
+ * Returns `true` if the specified value is an `EncodingError`, `false` otherwise.
+ *
+ * @since 1.0.0
+ * @category refinements
+ */
+export const isEncodingError: (error: unknown) => error is EncodingError = Predicate.isTagged(encodingError) as any
+
+/**
+ * Internal helper function to wrap an encoder utility with `Either.try`.
+ */
+const makeEncoder =
+  <T extends (...args: Array<any>) => any>(encoder: T) =>
+  (...args: Parameters<T>): Either.Either<EncodingError, ReturnType<T>> =>
+    Either.try({
+      try: () => encoder(...args),
+      catch: (cause) => new EncodingError({ cause })
+    })
+
+/**
+ * Converts a hex string to a Uint8Array.
+ *
+ * @since 1.0.0
+ * @category encoding
+ */
+export const bytesToHex: (
+  bytes: Uint8Array
+) => Either.Either<EncodingError, string> = makeEncoder(CiphersUtils.bytesToHex)
+
+/**
+ * Converts a Uint8Array to a hex string.
+ *
+ * @since 1.0.0
+ * @category encoding
+ */
+export const hexToBytes: (
+  hex: string
+) => Either.Either<EncodingError, Uint8Array> = makeEncoder(CiphersUtils.hexToBytes)
+
+/**
+ * Converts a number to a Uint8Array.
+ *
+ * @since 1.0.0
+ * @category encoding
+ */
+export const numberToBytes: (
+  value: number | bigint,
+  length: number
+) => Either.Either<EncodingError, Uint8Array> = makeEncoder(CiphersUtils.numberToBytesBE)
