@@ -136,8 +136,11 @@ export const argon2id: (
   password: Uint8Array | string,
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
-) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2id)
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleArgon2.argon2id)
 
+/**
+ * TODO: This is not strictly modeled in `@noble/hashes/blake3`.
+ */
 type Blake3Opts = {
   dkLen?: number
   key: Uint8Array | string
@@ -161,8 +164,11 @@ type Blake3Opts = {
 export const blake3: (
   input: Uint8Array | string,
   opts?: Blake3Opts | undefined
-) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake3.blake3)
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake3.blake3)
 
+/**
+ * TODO: This is not exported by `@noble/hashes/blake2s`.
+ */
 type Blake2sOpts = Parameters<typeof NobleBlake2s.blake2s>[1]
 
 /**
@@ -174,8 +180,11 @@ type Blake2sOpts = Parameters<typeof NobleBlake2s.blake2s>[1]
 export const blake2s: (
   input: Uint8Array | string,
   opts?: Blake2sOpts | undefined
-) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake2s.blake2s)
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake2s.blake2s)
 
+/**
+ * TODO: This is not exported by `@noble/hashes/blake2b`.
+ */
 type Blake2bOpts = Parameters<typeof NobleBlake2b.blake2b>[1]
 
 /**
@@ -187,4 +196,4 @@ type Blake2bOpts = Parameters<typeof NobleBlake2b.blake2b>[1]
 export const blake2b: (
   input: Uint8Array | string,
   opts?: Blake2bOpts | undefined
-) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake2b.blake2b)
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake2b.blake2b)
