@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import * as NobleArgon2 from "@noble/hashes/argon2"
 import * as Scrypt from "@noble/hashes/scrypt"
 import * as NobleSha256 from "@noble/hashes/sha256"
 import * as NobleSha512 from "@noble/hashes/sha512"
@@ -57,18 +58,18 @@ export const sha512_224: (input: string | Uint8Array) => Uint8Array = NobleSha51
  */
 export const sha512_256: (input: string | Uint8Array) => Uint8Array = NobleSha512.sha512_256
 
-class ScryptOptionsError extends Data.TaggedError("ScryptOptionsError")<{
+class CryptoError extends Data.TaggedError("effect-crypto/CryptoError")<{
   cause: unknown
 }> {}
 
 /**
- * Returns `true` if the specified value is an `ScryptOptionsError`, `false` otherwise.
+ * Returns `true` if the specified value is an `CryptoError`, `false` otherwise.
  *
  * @since 2.0.0
  * @category refinements
  */
-export const isScryptOptionsError: (error: unknown) => error is ScryptOptionsError = Predicate.isTagged(
-  "ScryptOptionsError"
+export const isCryptoError: (error: unknown) => error is CryptoError = Predicate.isTagged(
+  "CryptoError"
 ) as any
 
 /**
@@ -81,8 +82,56 @@ export const scrypt = (
   input: string | Uint8Array,
   salt: string | Uint8Array,
   options: Scrypt.ScryptOpts
-): Either.Either<ScryptOptionsError, Uint8Array> =>
+): Either.Either<CryptoError, Uint8Array> =>
   Either.try({
     try: () => Scrypt.scrypt(input, salt, options),
-    catch: (cause) => new ScryptOptionsError({ cause })
+    catch: (cause) => new CryptoError({ cause })
+  })
+
+/**
+ * Password hashing the password and salt with argon2d.
+ *
+ * @since 1.0.0
+ * @category password hashing
+ */
+export const argon2d = (
+  password: Uint8Array | string,
+  salt: Uint8Array | string,
+  opts: NobleArgon2.ArgonOpts
+): Either.Either<CryptoError, Uint8Array> =>
+  Either.try({
+    try: () => NobleArgon2.argon2d(password, salt, opts),
+    catch: (cause) => new CryptoError({ cause })
+  })
+
+/**
+ * Password hashing the password and salt with argon2i.
+ *
+ * @since 1.0.0
+ * @category password hashing
+ */
+export const argon2i = (
+  password: Uint8Array | string,
+  salt: Uint8Array | string,
+  opts: NobleArgon2.ArgonOpts
+): Either.Either<CryptoError, Uint8Array> =>
+  Either.try({
+    try: () => NobleArgon2.argon2i(password, salt, opts),
+    catch: (cause) => new CryptoError({ cause })
+  })
+
+/**
+ * Password hashing the password and salt with argon2id.
+ *
+ * @since 1.0.0
+ * @category password hashing
+ */
+export const argon2id = (
+  password: Uint8Array | string,
+  salt: Uint8Array | string,
+  opts: NobleArgon2.ArgonOpts
+): Either.Either<CryptoError, Uint8Array> =>
+  Either.try({
+    try: () => NobleArgon2.argon2id(password, salt, opts),
+    catch: (cause) => new CryptoError({ cause })
   })
