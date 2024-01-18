@@ -65,7 +65,7 @@ class CryptoError extends Data.TaggedError("effect-crypto/CryptoError")<{
 /**
  * Returns `true` if the specified value is an `CryptoError`, `false` otherwise.
  *
- * @since 2.0.0
+ * @since 1.0.0
  * @category refinements
  */
 export const isCryptoError: (error: unknown) => error is CryptoError = Predicate.isTagged(
