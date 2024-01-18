@@ -4,6 +4,9 @@
 
 import * as CiphersUtils from "@noble/ciphers/utils"
 import * as NobleArgon2 from "@noble/hashes/argon2"
+import * as NobleBlake2b from "@noble/hashes/blake2b"
+import * as NobleBlake2s from "@noble/hashes/blake2s"
+import * as NobleBlake3 from "@noble/hashes/blake3"
 import * as Scrypt from "@noble/hashes/scrypt"
 import * as NobleSha256 from "@noble/hashes/sha256"
 import * as NobleSha512 from "@noble/hashes/sha512"
@@ -131,6 +134,57 @@ export const argon2id: (
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
 ) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleArgon2.argon2id)
+
+export type Blake3Opts = {
+  dkLen?: number
+  key: Uint8Array | string
+  context?: never
+} | {
+  dkLen?: number
+  key?: never
+  context: Uint8Array | string
+} | {
+  dkLen?: number
+  key?: never
+  context?: never
+}
+
+/**
+ * Hashing the input with blake3.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake3: (
+  input: Uint8Array | string,
+  opts?: Blake3Opts | undefined
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake3.blake3)
+
+type Blake2sOpts = Parameters<typeof NobleBlake2s.blake2s>[1]
+
+/**
+ * Hashing the input with blake2s.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake2s: (
+  input: Uint8Array | string,
+  opts?: Blake2sOpts | undefined
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake2s.blake2s)
+
+type Blake2bOpts = Parameters<typeof NobleBlake2b.blake2b>[1]
+
+/**
+ * Hashing the input with blake2b.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake2b: (
+  input: Uint8Array | string,
+  opts?: Blake2bOpts | undefined
+) => Either.Either<CryptoError, Uint8Array> = makeCryptoFn(NobleBlake2b.blake2b)
 
 const encodingError = "effect-crypto/EncodingError"
 class EncodingError extends Data.TaggedError(encodingError)<{
