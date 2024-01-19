@@ -172,7 +172,7 @@ export const blake3: (
 type Blake2sOpts = Parameters<typeof NobleBlake2s.blake2s>[1]
 
 /**
- * Hashes the input with blake2.
+ * Hashes the input with blake2s.
  *
  * @since 1.0.0
  * @category hashing
