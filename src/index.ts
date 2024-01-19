@@ -3,6 +3,9 @@
  */
 
 import * as NobleArgon2 from "@noble/hashes/argon2"
+import * as NobleBlake2b from "@noble/hashes/blake2b"
+import * as NobleBlake2s from "@noble/hashes/blake2s"
+import * as NobleBlake3 from "@noble/hashes/blake3"
 import * as NobleScrypt from "@noble/hashes/scrypt"
 import * as NobleSha256 from "@noble/hashes/sha256"
 import * as NobleSha512 from "@noble/hashes/sha512"
@@ -134,3 +137,63 @@ export const argon2id: (
   salt: Uint8Array | string,
   opts: NobleArgon2.ArgonOpts
 ) => Either.Either<CryptoError, Uint8Array> = wrap(NobleArgon2.argon2id)
+
+/**
+ * TODO: This is not strictly modeled in `@noble/hashes/blake3`.
+ */
+type Blake3Opts = {
+  dkLen?: number
+  key: Uint8Array | string
+  context?: never
+} | {
+  dkLen?: number
+  key?: never
+  context: Uint8Array | string
+} | {
+  dkLen?: number
+  key?: never
+  context?: never
+}
+
+/**
+ * Hashes the input with blake3.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake3: (
+  input: Uint8Array | string,
+  opts?: Blake3Opts | undefined
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake3.blake3)
+
+/**
+ * TODO: This is not exported by `@noble/hashes/blake2s`.
+ */
+type Blake2sOpts = Parameters<typeof NobleBlake2s.blake2s>[1]
+
+/**
+ * Hashes the input with blake2s.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake2s: (
+  input: Uint8Array | string,
+  opts?: Blake2sOpts | undefined
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake2s.blake2s)
+
+/**
+ * TODO: This is not exported by `@noble/hashes/blake2b`.
+ */
+type Blake2bOpts = Parameters<typeof NobleBlake2b.blake2b>[1]
+
+/**
+ * Hashes the input with blake2b.
+ *
+ * @since 1.0.0
+ * @category hashing
+ */
+export const blake2b: (
+  input: Uint8Array | string,
+  opts?: Blake2bOpts | undefined
+) => Either.Either<CryptoError, Uint8Array> = wrap(NobleBlake2b.blake2b)
